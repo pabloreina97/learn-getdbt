@@ -106,7 +106,7 @@ Antes de comenzar, asegúrate de cumplir con los siguientes requisitos:
 Si tienes dudas, preguntas o simplemente quieres compartir tus aprendizajes, no dudes en contactar:
 
 - **Autor**: Pablo Reina Gálvez
-- **LinkedIn**: [Pablo Reina](https://www.linkedin.com/in/pabloreina)
+- **LinkedIn**: [Pablo Reina](https://www.linkedin.com/in/preina)
 
 ---
 
