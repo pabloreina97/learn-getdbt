@@ -8,32 +8,6 @@ with
     payments as (select * from {{ ref("stg_stripe_payments") }}),
 
     -- Logical CTEs
-    completed_payments as (
-        select
-            order_id,
-            max(payment_created_at) as payment_finalized_date,
-            sum(payment_amount) as total_amount_paid
-        from payments
-        where payment_status <> 'fail'
-        group by 1
-    ),
-    paid_orders as (
-        select
-            orders.order_id,
-            orders.customer_id,
-            orders.order_placed_at,
-            orders.order_status,
-
-            completed_payments.total_amount_paid,
-            completed_payments.payment_finalized_date,
-
-            customers.customer_first_name,
-            customers.customer_last_name
-        from orders
-        left join completed_payments on orders.order_id = completed_payments.order_id
-        left join customers on orders.customer_id = customers.customer_id
-    ),
-
     customer_orders as (
         select
             customers.customer_id,
@@ -44,11 +18,20 @@ with
         left join orders on orders.customer_id = customers.customer_id
         group by 1
     ),
-
+    paid_ordes as (
+        select * from {{ ref("int_orders") }}
+    )
     -- Final CTE
     final as (
         select
-            paid_orders.*,
+            paid_orders.order_id,
+            paid_orders.customer_id,
+            paid_orders.order_placed_at,
+            paid_orders.order_status,
+            paid_orders.total_amount_paid,
+            paid_orders.payment_finalized_date,
+            paid_orders.customer_first_name,
+            paid_orders.customer_last_name,
             row_number() over (order by paid_orders.order_id) as transaction_seq,
             row_number() over (
                 partition by customer_id order by paid_orders.order_id
