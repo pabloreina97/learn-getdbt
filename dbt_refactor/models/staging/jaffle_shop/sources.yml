@@ -2,7 +2,8 @@ version: 2
 
 sources:
   - name: jaffle_shop
-    database: jaffle_shop
+    database: balmy-doodad-443709-g8
+    schema: jaffle_shop
     tables:
       - name: customers
         identifier: jaffle_shop_customers
