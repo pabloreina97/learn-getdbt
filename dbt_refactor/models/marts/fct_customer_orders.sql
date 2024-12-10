@@ -23,10 +23,10 @@ with
             orders.user_id as customer_id,
             orders.order_date as order_placed_at,
             orders.status as order_status,
-            p.total_amount_paid,
-            p.payment_finalized_date,
-            c.first_name as customer_first_name,
-            c.last_name as customer_last_name
+            completed_payments.total_amount_paid,
+            completed_payments.payment_finalized_date,
+            customers.first_name as customer_first_name,
+            customers.last_name as customer_last_name
         from orders
         left join completed_payments on orders.id = completed_payments.order_id
         left join customers on orders.user_id = customers.id
@@ -34,7 +34,7 @@ with
 
     customer_orders as (
         select
-            c.id as customer_id,
+            customers.id as customer_id,
             min(order_date) as first_order_date,
             max(order_date) as most_recent_order_date,
             count(orders.id) as number_of_orders
@@ -52,7 +52,7 @@ with
                 partition by customer_id order by paid_orders.order_id
             ) as customer_sales_seq,
             case
-                when c.first_order_date = paid_orders.order_placed_at then 'new' else 'return'
+                when customer_orders.first_order_date = paid_orders.order_placed_at then 'new' else 'return'
             end as nvsr,
             x.clv_bad as customer_lifetime_value,
             sum(total_amount_paid) over (
