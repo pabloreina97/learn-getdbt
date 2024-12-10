@@ -1,3 +1,4 @@
+*.pdf
 
 target/
 dbt_packages/
