@@ -5,8 +5,6 @@ with
 
     orders as (select * from {{ ref("stg_jaffle_shop_orders") }}),
 
-    payments as (select * from {{ ref("stg_stripe_payments") }}),
-
     -- Logical CTEs
     customer_orders as (
         select
@@ -18,7 +16,7 @@ with
         left join orders on orders.customer_id = customers.customer_id
         group by 1
     ),
-    paid_ordes as (
+    paid_orders as (
         select * from {{ ref("int_orders") }}
     )
     -- Final CTE
