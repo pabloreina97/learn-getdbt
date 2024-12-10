@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: jaffle_shop
+    database: jaffle_shop
+    tables:
+      - name: payments
+        identifier: stripe_payments
