@@ -1,5 +1,6 @@
 with
     -- Import CTEs
+    customers as (select * from {{ ref("stg_jaffle_shop_customers") }}),
     orders as (select * from {{ ref("stg_jaffle_shop_orders") }}),
     payments as (select * from {{ ref("stg_stripe_payments") }}),
     
@@ -28,6 +29,6 @@ with
         from orders
         left join completed_payments on orders.order_id = completed_payments.order_id
         left join customers on orders.customer_id = customers.customer_id
-    ),
+    )
 
 select * from paid_orders

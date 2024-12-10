@@ -10,7 +10,7 @@ with
             status as order_status,
 
             case
-                when order_status not in ('return', 'return_pending') then order_date
+                when status not in ('return', 'return_pending') then order_date
             end as value_order_date,
         from source
     )
