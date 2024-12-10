@@ -8,6 +8,16 @@ with
     payments as (select * from {{ source("jaffle_shop", "payments") }}),
 
     -- Logical CTEs
+
+    completed_payments as (
+        select
+                    orderid as order_id,
+                    max(created) as payment_finalized_date,
+                    sum(amount) / 100.0 as total_amount_paid
+                from payments
+                where status <> 'fail'
+                group by 1
+    ),
     -- Final CTE
     -- Simple Select Statment
     paid_orders as (
@@ -21,16 +31,7 @@ with
             c.first_name as customer_first_name,
             c.last_name as customer_last_name
         from orders
-        left join
-            (
-                select
-                    orderid as order_id,
-                    max(created) as payment_finalized_date,
-                    sum(amount) / 100.0 as total_amount_paid
-                from {{ source("jaffle_shop", "payments") }}
-                where status <> 'fail'
-                group by 1
-            ) p
+        left join completed_payments as p
             on orders.id = p.order_id
         left join customers c on orders.user_id = c.id
     ),
